@@ -12,7 +12,7 @@
   --color-border-warm: #c9a87a;
   --color-paper-dot: #e8dfc8;
 
-  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-display: var(--font-bricolage), -apple-system, system-ui, sans-serif;
   --font-sans: var(--font-inter), -apple-system, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), "Courier New", monospace;
 }
