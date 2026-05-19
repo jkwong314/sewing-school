@@ -1,4 +1,5 @@
 import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import { MaterialsTable } from "./MaterialsTable";
 import { StepList, Step } from "./StepList";
 
@@ -22,8 +23,29 @@ const components: MDXRemoteProps["components"] = {
   blockquote: (props) => (
     <blockquote className="border-l-4 border-blush pl-4 italic text-ink-soft my-6" {...props} />
   ),
+  table: (props) => (
+    <div className="my-6 overflow-x-auto dashed-border bg-white">
+      <table className="w-full text-left text-ink" {...props} />
+    </div>
+  ),
+  thead: (props) => <thead className="bg-cream-deep" {...props} />,
+  th: (props) => (
+    <th
+      className="font-mono text-xs uppercase tracking-widest text-brown-deep px-4 py-3 border-b-2 border-border-warm"
+      {...props}
+    />
+  ),
+  td: (props) => (
+    <td className="px-4 py-3 align-top border-b border-border-warm/50" {...props} />
+  ),
+};
+
+const mdxOptions = {
+  mdxOptions: {
+    remarkPlugins: [remarkGfm],
+  },
 };
 
 export function MdxContent({ source }: { source: string }) {
-  return <MDXRemote source={source} components={components} />;
+  return <MDXRemote source={source} components={components} options={mdxOptions} />;
 }
