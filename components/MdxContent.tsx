@@ -1,0 +1,29 @@
+import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
+import { MaterialsTable } from "./MaterialsTable";
+import { StepList, Step } from "./StepList";
+
+const components: MDXRemoteProps["components"] = {
+  MaterialsTable: MaterialsTable as never,
+  StepList: StepList as never,
+  Step: Step as never,
+  h1: (props) => <h1 className="font-display text-4xl text-ink mt-10 mb-4" {...props} />,
+  h2: (props) => <h2 className="font-display text-2xl text-ink mt-10 mb-3" {...props} />,
+  h3: (props) => <h3 className="font-display text-xl text-ink mt-8 mb-2" {...props} />,
+  p: (props) => <p className="text-ink leading-relaxed my-4" {...props} />,
+  ul: (props) => <ul className="list-disc list-outside ml-6 my-4 space-y-1 text-ink" {...props} />,
+  ol: (props) => <ol className="list-decimal list-outside ml-6 my-4 space-y-1 text-ink" {...props} />,
+  a: (props) => (
+    <a
+      className="text-brown-deep underline decoration-blush decoration-2 underline-offset-4 hover:text-ink"
+      {...props}
+    />
+  ),
+  strong: (props) => <strong className="font-semibold text-ink" {...props} />,
+  blockquote: (props) => (
+    <blockquote className="border-l-4 border-blush pl-4 italic text-ink-soft my-6" {...props} />
+  ),
+};
+
+export function MdxContent({ source }: { source: string }) {
+  return <MDXRemote source={source} components={components} />;
+}
