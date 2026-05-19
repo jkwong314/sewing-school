@@ -1,25 +1,22 @@
 import type { StitchConfig, StitchInstance } from "./stitches";
 
 export type PiercePoint = {
-  // Canvas-space coordinates of where this stitch pierced
-  x: number;
-  y: number;
+  x: number;        // Canvas x
+  fabricY: number;  // Stored at "needleY - fabricAdvance at pierce time"
+  stitchIndex: number;
+  stage?: string;
+  lateralOffset: number;
 };
 
 export type EngineState = {
   config: StitchConfig;
-  // Index of the current stitch being formed (0-based)
   currentStitch: number;
-  // Phase within current stitch: 0 = needle up at start, 0.5 = needle at bottom, 1 = needle up at end
-  phase: number;
-  // Cumulative fabric advance in canvas units. Increasing = fabric moves "down past" the needle.
-  fabricAdvance: number;
-  // History of pierce points in fabric-space (relative to start of pattern)
+  phase: number;        // 0..1 within current stitch cycle
+  fabricAdvance: number; // Smooth, continuous; pixel units
   pierces: PiercePoint[];
-  // Center of the needle's horizontal axis (set by renderer based on canvas width)
-  needleX: number;
-  // Y of the needle's pierce line in canvas (the line where needle meets fabric)
-  needleY: number;
+  needleX: number;       // Canvas-space x of the needle column
+  needleY: number;       // Canvas-space y where the needle meets the fabric
+  finished: boolean;
 };
 
 export function createInitialState(config: StitchConfig, needleX: number, needleY: number): EngineState {
@@ -31,58 +28,90 @@ export function createInitialState(config: StitchConfig, needleX: number, needle
     pierces: [],
     needleX,
     needleY,
+    finished: false,
   };
 }
 
-// Advance the simulation by dt seconds at given speed (1 = nominal). Returns new state.
-export function tick(state: EngineState, dtSeconds: number, speed: number, stitchesPerSecond: number): EngineState {
+// Get the current stitch instance, looping/clamping appropriately
+function getInstance(config: StitchConfig, index: number): StitchInstance {
+  if (index >= config.totalStitches) {
+    if (config.loop) return config.getStitch(index % config.totalStitches);
+    return { lateralOffset: 0, advance: 0 };
+  }
+  return config.getStitch(index);
+}
+
+export function tick(
+  state: EngineState,
+  dtSeconds: number,
+  speed: number,
+  stitchesPerSecond: number,
+): EngineState {
+  if (state.finished) return state;
   const phaseRate = stitchesPerSecond * speed;
   let { phase, currentStitch, fabricAdvance, pierces } = state;
+  let finished: boolean = state.finished;
   const { config, needleX, needleY } = state;
 
-  phase += dtSeconds * phaseRate;
+  const dPhase = dtSeconds * phaseRate;
 
+  // The fabric advances continuously during the cycle, scaled by the CURRENT stitch's advance.
+  // This produces smooth motion proportional to phase progress.
+  const upcoming = getInstance(config, currentStitch);
+  fabricAdvance += dPhase * upcoming.advance * config.stitchLength;
+
+  phase += dPhase;
+
+  // Wrap phase, recording a pierce per completed cycle.
   while (phase >= 1) {
     phase -= 1;
-    // Stitch just completed at the bottom dwell of this index. Record pierce + advance fabric.
-    const instance = config.getStitch(currentStitch);
+    const instance = getInstance(config, currentStitch);
     const px = needleX + instance.lateralOffset * (config.stitchWidth / 2);
-    // The pierce was made when fabricAdvance was at its CURRENT value (before this stitch's advance)
-    pierces = [...pierces, { x: px, y: needleY - fabricAdvance }];
-    fabricAdvance += instance.advance * config.stitchLength;
+    pierces = [
+      ...pierces,
+      {
+        x: px,
+        fabricY: needleY - fabricAdvance,
+        stitchIndex: currentStitch,
+        stage: instance.stage,
+        lateralOffset: instance.lateralOffset,
+      },
+    ];
     currentStitch += 1;
     if (currentStitch >= config.totalStitches) {
       if (config.loop) currentStitch = 0;
       else {
-        currentStitch = config.totalStitches; // done
+        finished = true;
         phase = 0;
         break;
       }
     }
   }
 
-  return { ...state, phase, currentStitch, fabricAdvance, pierces };
+  return { ...state, phase, currentStitch, fabricAdvance, pierces, finished };
 }
 
 export function stepForward(state: EngineState): EngineState {
-  // Advance to the next completed pierce.
-  return tick(state, 1, 1, 1); // 1 stitch / sec for 1 sec = 1 stitch
+  if (state.finished) return state;
+  // Advance to next pierce: roughly 1 stitch
+  return tick(state, 1, 1, 1);
 }
 
 export function reset(state: EngineState): EngineState {
   return createInitialState(state.config, state.needleX, state.needleY);
 }
 
-// Compute the current needle vertical position from phase.
-// phase 0 -> top, phase 0.5 -> bottom (in fabric), phase 1 -> top again.
-// Returns a value in 0..1 where 0 = fully raised, 1 = fully descended.
+// Needle vertical descent normalized 0..1 (0 = up, 1 = at bottom dwell)
 export function needleDescent(phase: number): number {
   return Math.sin(Math.PI * phase);
 }
 
-// What is the current intended pierce X (for the upcoming stitch)?
 export function currentPierceX(state: EngineState): number {
-  if (state.currentStitch >= state.config.totalStitches) return state.needleX;
-  const inst: StitchInstance = state.config.getStitch(state.currentStitch);
+  const inst = getInstance(state.config, state.currentStitch);
   return state.needleX + inst.lateralOffset * (state.config.stitchWidth / 2);
+}
+
+export function currentStage(state: EngineState): string | undefined {
+  const inst = getInstance(state.config, state.currentStitch);
+  return inst.stage;
 }
