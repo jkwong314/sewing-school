@@ -78,52 +78,97 @@ export function JeansMeasureDiagram() {
   );
 }
 
-/** Hem jeans: cross-section of the folded cuff showing the new stitch line */
+/** Hem jeans: side-view cross-section of the folded cuff while sewing.
+ * Shows the U-fold: outer leg coming down, folding back up inside, with the
+ * factory hem now pointing up into the leg cavity and the new stitch line
+ * passing through BOTH layers just outboard of where the factory hem ends. */
 export function JeansFoldCrossSection() {
   return (
     <svg viewBox="0 0 480 270" {...svgProps}>
-      {/* Three horizontal bands stacked: outside, fold, factory hem layer */}
-
-      {/* Outside (top) */}
-      <rect x={40} y={30} width={400} height={40} fill={C.denim} />
-      <text x={240} y={56} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.cream}>
-        OUTSIDE OF THE LEG
+      {/* Title */}
+      <text x={240} y={26} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.ink} fontWeight="bold">
+        SIDE VIEW: THE U-FOLD WHILE YOU SEW
       </text>
 
-      {/* Small vertical gap */}
+      {/* Knee direction arrow */}
+      <g fill={C.inkSoft} fontFamily={FONT} fontSize="10">
+        <text x={20} y={50}>↑ toward knee</text>
+      </g>
+      {/* Cuff edge direction arrow */}
+      <g fill={C.inkSoft} fontFamily={FONT} fontSize="10">
+        <text x={20} y={260}>↓ visible cuff edge</text>
+      </g>
 
-      {/* Fold (inside layer) */}
-      <rect x={40} y={80} width={400} height={40} fill={C.denimLight} />
-      <text x={240} y={106} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.cream}>
-        FOLD (INSIDE OF THE CUFF)
-      </text>
-
-      {/* New stitch line — between fold and factory hem */}
-      <line
-        x1={50}
-        y1={138}
-        x2={430}
-        y2={138}
-        stroke={C.blushDeep}
-        strokeWidth="3"
-        strokeDasharray="6,4"
+      {/* The folded cuff drawn as a U-path:
+          - Outer leg comes DOWN on the left (from y=40 to y=215)
+          - Curves around the bottom (the cuff fold)
+          - Inside-fold layer goes back UP on the right, shorter (terminates at y=110)
+       */}
+      <path
+        d="M 192 40
+           L 192 215
+           Q 192 235 212 235
+           L 268 235
+           Q 288 235 288 215
+           L 288 110
+           L 252 110
+           L 252 215
+           L 228 215
+           L 228 40 Z"
+        fill={C.denim}
+        stroke={C.ink}
+        strokeWidth="1.5"
       />
-      <text x={240} y={132} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.blushDeep} fontWeight="bold">
-        ← new stitch line: 1–2 mm above the factory hem →
-      </text>
 
-      {/* Factory hem (bottom layer, dark) */}
-      <rect x={40} y={148} width={400} height={40} fill={C.denimDeep} />
-      <line x1={40} y1={168} x2={440} y2={168} stroke={C.cream} strokeWidth="1.5" strokeDasharray="8,4" />
-      <text x={240} y={178} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.cream}>
-        FACTORY HEM (DON&apos;T STITCH INTO IT)
-      </text>
+      {/* Factory hem stitching — sits at the TOP of the inside-fold layer
+          (the inner layer is inverted, so the original bottom-of-jeans is here) */}
+      <line x1={252} y1={125} x2={288} y2={125} stroke={C.cream} strokeWidth="2" strokeDasharray="5,3" />
 
-      {/* Trim line below */}
-      <line x1={50} y1={210} x2={430} y2={210} stroke={C.ink} strokeWidth="1.5" strokeDasharray="4,3" />
-      <text x={240} y={232} textAnchor="middle" fontFamily={FONT} fontSize="12" fill={C.ink}>
-        ✂  AFTER SEWING, TRIM EXCESS ABOUT 1 CM BELOW THE NEW STITCH LINE
-      </text>
+      {/* NEW stitch line — crosses BOTH layers, slightly above the factory hem
+          (above in this view = toward the knee, which is "above" in original
+          orientation too) */}
+      <line x1={170} y1={100} x2={310} y2={100} stroke={C.blush} strokeWidth="3" strokeDasharray="8,4" />
+
+      {/* Left-side label for the outer leg */}
+      <g fontFamily={FONT} fontSize="12" fill={C.ink}>
+        <line x1={150} y1={170} x2={188} y2={150} stroke={C.ink} strokeWidth="1" />
+        <text x={146} y={172} textAnchor="end">outer leg</text>
+        <text x={146} y={186} textAnchor="end" fontSize="10" fill={C.inkSoft}>
+          (visible side)
+        </text>
+      </g>
+
+      {/* Right-side label for the inside fold */}
+      <g fontFamily={FONT} fontSize="12" fill={C.ink}>
+        <line x1={332} y1={170} x2={290} y2={150} stroke={C.ink} strokeWidth="1" />
+        <text x={336} y={172}>inside of fold</text>
+        <text x={336} y={186} fontSize="10" fill={C.inkSoft}>
+          (excess, folded up)
+        </text>
+      </g>
+
+      {/* Factory hem callout (right) */}
+      <g fontFamily={FONT} fontSize="11" fill={C.brown}>
+        <line x1={332} y1={125} x2={292} y2={125} stroke={C.brown} strokeWidth="1" />
+        <text x={336} y={120}>factory hem stitching</text>
+        <text x={336} y={134} fontSize="10" fill={C.inkSoft}>
+          (now pointing up)
+        </text>
+      </g>
+
+      {/* New stitch line callout (left) */}
+      <g fontFamily={FONT}>
+        <line x1={150} y1={100} x2={170} y2={100} stroke={C.blushDeep} strokeWidth="1.5" />
+        <text x={146} y={94} textAnchor="end" fontSize="13" fill={C.blushDeep} fontWeight="bold">
+          NEW STITCH LINE
+        </text>
+        <text x={146} y={108} textAnchor="end" fontSize="10" fill={C.brown}>
+          through both layers,
+        </text>
+        <text x={146} y={120} textAnchor="end" fontSize="10" fill={C.brown}>
+          1–2 mm above the factory hem
+        </text>
+      </g>
     </svg>
   );
 }
