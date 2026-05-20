@@ -2,11 +2,33 @@ import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { MaterialsTable } from "./MaterialsTable";
 import { StepList, Step } from "./StepList";
+import { Diagram } from "./Diagram";
+import {
+  JeansMeasureDiagram,
+  JeansFoldCrossSection,
+  JeansStitchCloseup,
+  JeansFinishedDiagram,
+  RuffleCutDiagram,
+  RuffleTubeDiagram,
+  RuffleCasingCrossSection,
+  RuffleElasticDiagram,
+  RuffleHemCrossSection,
+} from "./ProjectDiagrams";
 
 const components: MDXRemoteProps["components"] = {
   MaterialsTable: MaterialsTable as never,
   StepList: StepList as never,
   Step: Step as never,
+  Diagram: Diagram as never,
+  JeansMeasureDiagram: JeansMeasureDiagram as never,
+  JeansFoldCrossSection: JeansFoldCrossSection as never,
+  JeansStitchCloseup: JeansStitchCloseup as never,
+  JeansFinishedDiagram: JeansFinishedDiagram as never,
+  RuffleCutDiagram: RuffleCutDiagram as never,
+  RuffleTubeDiagram: RuffleTubeDiagram as never,
+  RuffleCasingCrossSection: RuffleCasingCrossSection as never,
+  RuffleElasticDiagram: RuffleElasticDiagram as never,
+  RuffleHemCrossSection: RuffleHemCrossSection as never,
   h1: (props) => <h1 className="font-display text-4xl text-ink mt-10 mb-4" {...props} />,
   h2: (props) => <h2 className="font-display text-2xl text-ink mt-10 mb-3" {...props} />,
   h3: (props) => <h3 className="font-display text-xl text-ink mt-8 mb-2" {...props} />,

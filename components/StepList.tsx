@@ -1,6 +1,6 @@
-import { Children, isValidElement } from "react";
+import { Children, isValidElement, type ReactNode } from "react";
 
-export function StepList({ children }: { children: React.ReactNode }) {
+export function StepList({ children }: { children: ReactNode }) {
   const steps = Children.toArray(children).filter(isValidElement);
   return (
     <ol className="my-8 space-y-6">
@@ -19,6 +19,6 @@ export function StepList({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function Step({ children }: { children: React.ReactNode }) {
+export function Step({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }

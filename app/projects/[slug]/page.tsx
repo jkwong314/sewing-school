@@ -3,7 +3,9 @@ import Link from "next/link";
 import { PageStub } from "@/components/PageStub";
 import { MdxContent } from "@/components/MdxContent";
 import { MaterialsTable } from "@/components/MaterialsTable";
+import { JeansHeroIllustration, RuffleSkirtIllustration } from "@/components/Illustrations";
 import { readDoc, listSlugs } from "@/lib/content";
+import type { ReactNode } from "react";
 
 const stubs: Record<string, { title: string; blurb: string }> = {
   "hem-jeans": {
@@ -14,6 +16,11 @@ const stubs: Record<string, { title: string; blurb: string }> = {
     title: "Ruffle skirt",
     blurb: "A two-rectangle skirt with a gathered top edge and an elastic waistband.",
   },
+};
+
+const heroes: Record<string, ReactNode> = {
+  "hem-jeans": <JeansHeroIllustration />,
+  "ruffle-skirt": <RuffleSkirtIllustration />,
 };
 
 export function generateStaticParams() {
@@ -28,6 +35,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   if (doc) {
     const fm = doc.frontmatter;
+    const hero = heroes[slug];
     return (
       <article className="mx-auto max-w-3xl px-6 py-12">
         <Link href="/projects" className="font-mono text-xs uppercase tracking-widest text-brown hover:text-brown-deep inline-flex items-center mb-6">
@@ -40,6 +48,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           {fm.difficulty && <>{fm.difficulty}</>}
           {fm.timeMinutes && <> · {fm.timeMinutes} min</>}
         </div>
+        {hero && (
+          <div className="dashed-border bg-white mt-6 overflow-hidden">
+            <div
+              className="bg-cream-deep flex items-center justify-center"
+              style={{ aspectRatio: "16/9" }}
+              aria-hidden="true"
+            >
+              {hero}
+            </div>
+          </div>
+        )}
         {fm.materials && <MaterialsTable materials={fm.materials} />}
         <div className="mt-6"><MdxContent source={doc.body} /></div>
       </article>
