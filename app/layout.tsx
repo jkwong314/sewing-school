@@ -23,9 +23,29 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sewing School — Learn to use your sewing machine",
+  metadataBase: new URL("https://sewing-school.vercel.app"),
+  title: {
+    default: "Sewing School — Learn to use your sewing machine",
+    template: "%s · Sewing School",
+  },
   description:
     "A friendly, project-first guide to using a sewing machine. Setup walkthroughs, stitch simulators, fabric and needle references, and beginner projects.",
+  openGraph: {
+    title: "Sewing School",
+    description:
+      "Learn to use a sewing machine with project walkthroughs, an interactive stitch simulator, and a fabric/needle/thread reference.",
+    url: "https://sewing-school.vercel.app",
+    siteName: "Sewing School",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sewing School",
+    description:
+      "Learn to use a sewing machine with project walkthroughs and an interactive stitch simulator.",
+  },
+  themeColor: "#faf6ee",
 };
 
 export default function RootLayout({
