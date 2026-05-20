@@ -1,6 +1,9 @@
 /**
  * Per-section diagrams for project walkthroughs.
- * Each is an inline SVG sized to fill its container.
+ * All sized to viewBox 480×270 and labeled with WCAG-safe contrast pairs:
+ *   - On cream/light backgrounds:  ink / brown / blushDeep text
+ *   - On denim/dark backgrounds:   cream text
+ * Labels stay inside the viewBox.
  */
 
 const C = {
@@ -9,6 +12,7 @@ const C = {
   ink: "#3a2e22",
   inkSoft: "#5a4632",
   brown: "#7a4a2b",
+  brownDeep: "#5a3a20",
   blush: "#e8a5a0",
   blushDeep: "#8e4544",
   border: "#c9a87a",
@@ -21,52 +25,54 @@ const svgProps = {
   width: "100%",
   height: "100%",
   preserveAspectRatio: "xMidYMid meet" as const,
-  "aria-hidden": true,
+  "aria-hidden": true as const,
 };
+
+const FONT = "ui-monospace,SFMono-Regular,Menlo,monospace";
+
+/* ──────────────────────────────────────────────────────────────────────── */
+/* HEM JEANS                                                                 */
+/* ──────────────────────────────────────────────────────────────────────── */
 
 /** Hem jeans: measure the desired length on the wearer */
 export function JeansMeasureDiagram() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Person standing — abstract outline */}
-      <g fill="none" stroke={C.ink} strokeWidth="1.5">
-        {/* Torso */}
-        <path d="M170 30 L230 30 L235 75 L165 75 Z" fill={C.cream} />
-        {/* Belt */}
-        <line x1={165} y1={75} x2={235} y2={75} strokeWidth="2" />
-      </g>
-      {/* Original-length jeans (excess shown as semi-transparent) */}
-      <g>
-        {/* Full-length jean shape (the original) */}
-        <path d="M165 75 L235 75 L228 200 L172 200 Z" fill={C.denim} opacity="0.45" />
-        {/* Folded-up part overlay showing the new length */}
-        <path d="M165 75 L235 75 L232 160 L168 160 Z" fill={C.denim} />
-        {/* Fold line where the cuff sits */}
-        <line x1={168} y1={160} x2={232} y2={160} stroke={C.blushDeep} strokeWidth="2.5" strokeDasharray="4,3" />
-        {/* Original hem at original length */}
-        <line x1={172} y1={195} x2={228} y2={195} stroke={C.ink} strokeWidth="2" />
-        {/* "Fold to here" indicator */}
-        <g stroke={C.blushDeep} strokeWidth="1.5" fill="none">
-          <line x1={260} y1={160} x2={290} y2={160} />
-          <text x={295} y={155} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.ink}>
-            new length
-          </text>
-          <text x={295} y={170} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-            (fold here)
-          </text>
-        </g>
-        {/* Excess label */}
-        <g>
-          <line x1={290} y1={180} x2={260} y2={180} stroke={C.inkSoft} strokeWidth="1" />
-          <text x={295} y={184} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-            excess to trim
-          </text>
-        </g>
-      </g>
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Torso */}
+      <path d="M180 30 L260 30 L268 90 L172 90 Z" fill={C.creamDeep} stroke={C.ink} strokeWidth="1.5" />
+      <line x1={172} y1={90} x2={268} y2={90} stroke={C.ink} strokeWidth="2.5" />
+
+      {/* Full-length jeans (translucent — show the original length) */}
+      <path d="M172 90 L268 90 L260 240 L180 240 Z" fill={C.denim} opacity="0.35" />
+
+      {/* New (folded) length — opaque */}
+      <path d="M172 90 L268 90 L264 190 L176 190 Z" fill={C.denim} />
+
+      {/* New hem location — fold line */}
+      <line x1={176} y1={190} x2={264} y2={190} stroke={C.blushDeep} strokeWidth="3" strokeDasharray="5,3" />
+
+      {/* Original hem */}
+      <line x1={180} y1={235} x2={260} y2={235} stroke={C.ink} strokeWidth="2" />
+
       {/* Shoes */}
-      <g fill={C.ink}>
-        <ellipse cx={185} cy={205} rx={15} ry={5} />
-        <ellipse cx={215} cy={205} rx={15} ry={5} />
+      <ellipse cx={200} cy={250} rx={16} ry={5} fill={C.ink} />
+      <ellipse cx={240} cy={250} rx={16} ry={5} fill={C.ink} />
+
+      {/* Annotations on the right (within bounds) */}
+      <g fontFamily={FONT} fontSize="13" fill={C.blushDeep}>
+        <line x1={290} y1={190} x2={310} y2={190} stroke={C.blushDeep} strokeWidth="1.5" />
+        <text x={315} y={186}>new length</text>
+        <text x={315} y={200} fill={C.inkSoft} fontSize="11">(fold here)</text>
+      </g>
+
+      <g fontFamily={FONT} fontSize="11" fill={C.inkSoft}>
+        <line x1={290} y1={235} x2={310} y2={235} stroke={C.inkSoft} strokeWidth="1" />
+        <text x={315} y={239}>original hem</text>
+      </g>
+
+      <g fontFamily={FONT} fontSize="11" fill={C.brown}>
+        <line x1={290} y1={213} x2={310} y2={213} stroke={C.brown} strokeWidth="1" />
+        <text x={315} y={217}>excess to trim</text>
       </g>
     </svg>
   );
@@ -75,51 +81,49 @@ export function JeansMeasureDiagram() {
 /** Hem jeans: cross-section of the folded cuff showing the new stitch line */
 export function JeansFoldCrossSection() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Diagrammatic side view of one leg cuff */}
-      {/* Outer fabric (the visible outside of the jeans) */}
-      <g>
-        <rect x={60} y={30} width={280} height={28} fill={C.denim} />
-        <text x={350} y={48} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-          outside
-        </text>
-      </g>
-      {/* The fold — fabric goes up then doubles down inside */}
-      <g>
-        {/* Inner fold layer (the bit folded inside) */}
-        <rect x={60} y={62} width={280} height={28} fill={C.denimLight} />
-        <text x={350} y={80} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-          fold (inside)
-        </text>
-      </g>
-      {/* Factory hem — represented as a folded edge with stitching */}
-      <g>
-        <rect x={60} y={92} width={280} height={20} fill={C.denimDeep} />
-        <line x1={60} y1={105} x2={340} y2={105} stroke={C.cream} strokeWidth="1" strokeDasharray="6,4" />
-        <text x={350} y={104} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-          factory hem
-        </text>
-      </g>
-      {/* NEW stitch line — drawn just above factory hem */}
-      <g>
-        <line x1={70} y1={88} x2={330} y2={88} stroke={C.blushDeep} strokeWidth="2.5" strokeDasharray="6,3" />
-        <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.blushDeep}>
-          <text x={70} y={75}>new stitch line — just above the factory hem</text>
-        </g>
-        {/* Arrow pointing to new stitch */}
-        <line x1={200} y1={140} x2={200} y2={92} stroke={C.blushDeep} strokeWidth="1.5" />
-        <polygon points="195,98 200,90 205,98" fill={C.blushDeep} />
-        <text x={130} y={158} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.blushDeep}>
-          stitch 1–2mm above the original
-        </text>
-      </g>
-      {/* Cut-here line — for after sewing */}
-      <g>
-        <line x1={70} y1={172} x2={330} y2={172} stroke={C.ink} strokeWidth="1" strokeDasharray="3,3" />
-        <text x={140} y={188} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.ink}>
-          ✂ trim excess below (~1cm)
-        </text>
-      </g>
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Three horizontal bands stacked: outside, fold, factory hem layer */}
+
+      {/* Outside (top) */}
+      <rect x={40} y={30} width={400} height={40} fill={C.denim} />
+      <text x={240} y={56} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.cream}>
+        OUTSIDE OF THE LEG
+      </text>
+
+      {/* Small vertical gap */}
+
+      {/* Fold (inside layer) */}
+      <rect x={40} y={80} width={400} height={40} fill={C.denimLight} />
+      <text x={240} y={106} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.cream}>
+        FOLD (INSIDE OF THE CUFF)
+      </text>
+
+      {/* New stitch line — between fold and factory hem */}
+      <line
+        x1={50}
+        y1={138}
+        x2={430}
+        y2={138}
+        stroke={C.blushDeep}
+        strokeWidth="3"
+        strokeDasharray="6,4"
+      />
+      <text x={240} y={132} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.blushDeep} fontWeight="bold">
+        ← new stitch line: 1–2 mm above the factory hem →
+      </text>
+
+      {/* Factory hem (bottom layer, dark) */}
+      <rect x={40} y={148} width={400} height={40} fill={C.denimDeep} />
+      <line x1={40} y1={168} x2={440} y2={168} stroke={C.cream} strokeWidth="1.5" strokeDasharray="8,4" />
+      <text x={240} y={178} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.cream}>
+        FACTORY HEM (DON&apos;T STITCH INTO IT)
+      </text>
+
+      {/* Trim line below */}
+      <line x1={50} y1={210} x2={430} y2={210} stroke={C.ink} strokeWidth="1.5" strokeDasharray="4,3" />
+      <text x={240} y={232} textAnchor="middle" fontFamily={FONT} fontSize="12" fill={C.ink}>
+        ✂  AFTER SEWING, TRIM EXCESS ABOUT 1 CM BELOW THE NEW STITCH LINE
+      </text>
     </svg>
   );
 }
@@ -127,33 +131,39 @@ export function JeansFoldCrossSection() {
 /** Hem jeans: zoomed-in close-up showing the new stitch right above the original */
 export function JeansStitchCloseup() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Denim background with weave */}
-      <rect x={20} y={20} width={360} height={185} fill={C.denim} />
-      <g stroke={C.denimDeep} strokeWidth="0.5" opacity="0.5">
-        {Array.from({ length: 40 }).map((_, i) => (
-          <line key={i} x1={20} y1={25 + i * 5} x2={380} y2={25 + i * 5} />
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Denim background filling the frame */}
+      <rect x={20} y={20} width={440} height={230} fill={C.denim} />
+
+      {/* Subtle weave lines */}
+      <g stroke={C.denimDeep} strokeWidth="0.5" opacity="0.4">
+        {Array.from({ length: 36 }).map((_, i) => (
+          <line key={i} x1={20} y1={25 + i * 6} x2={460} y2={25 + i * 6} />
         ))}
       </g>
-      {/* Factory hem stitching line */}
-      <g stroke={C.cream} strokeWidth="2.5" strokeDasharray="10,5">
-        <line x1={30} y1={150} x2={370} y2={150} />
-      </g>
-      {/* "factory hem" label */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11">
-        <text x={30} y={175} fill={C.cream}>factory hem (don&rsquo;t touch)</text>
-      </g>
-      {/* New stitch line — close above */}
-      <g stroke={C.blushDeep} strokeWidth="2" strokeDasharray="8,4">
-        <line x1={30} y1={120} x2={370} y2={120} />
-      </g>
-      <g fontFamily="ui-monospace,monospace" fontSize="11">
-        <text x={30} y={105} fill={C.blushDeep}>new stitch line — 1 to 2 mm above</text>
-      </g>
-      {/* Pin pointing perpendicular to the seam */}
+
+      {/* Top label: NEW stitch line (cream on denim for contrast) */}
+      <text x={240} y={75} textAnchor="middle" fontFamily={FONT} fontSize="14" fill={C.cream} fontWeight="bold">
+        NEW STITCH LINE — 1 TO 2 MM ABOVE
+      </text>
+
+      {/* New stitch dashed line */}
+      <line x1={40} y1={100} x2={440} y2={100} stroke={C.blush} strokeWidth="3" strokeDasharray="10,4" />
+
+      {/* Gap area (the fabric between the two lines is where the magic happens) */}
+
+      {/* Factory hem dashed line */}
+      <line x1={40} y1={170} x2={440} y2={170} stroke={C.cream} strokeWidth="3" strokeDasharray="14,6" />
+
+      {/* Bottom label: factory hem */}
+      <text x={240} y={205} textAnchor="middle" fontFamily={FONT} fontSize="14" fill={C.cream} fontWeight="bold">
+        FACTORY HEM (DON&apos;T TOUCH)
+      </text>
+
+      {/* Small pin in the corner — won't overlap labels */}
       <g>
-        <line x1={180} y1={60} x2={195} y2={130} stroke={C.cream} strokeWidth="1.5" />
-        <circle cx={181} cy={58} r={3} fill={C.blushDeep} />
+        <line x1={62} y1={42} x2={92} y2={130} stroke={C.cream} strokeWidth="2" strokeLinecap="round" />
+        <circle cx={61} cy={40} r={4} fill={C.blushDeep} stroke={C.cream} strokeWidth="1" />
       </g>
     </svg>
   );
@@ -162,66 +172,76 @@ export function JeansStitchCloseup() {
 /** Hem jeans: finished cuff after pressing — factory hem visibly at the new length */
 export function JeansFinishedDiagram() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Pant leg from outside, showing the finished hem at new length */}
-      <g>
-        <path d="M120 30 L280 30 L264 200 L136 200 Z" fill={C.denim} />
-        {/* Factory hem — now at the new (shorter) length, indistinguishable from original */}
-        <line x1={136} y1={190} x2={264} y2={190} stroke={C.cream} strokeWidth="2" strokeDasharray="6,4" />
-        {/* Side seam */}
-        <line x1={140} y1={40} x2={140} y2={190} stroke={C.denimDeep} strokeWidth="1" strokeDasharray="3,2" />
-        <line x1={260} y1={40} x2={260} y2={190} stroke={C.denimDeep} strokeWidth="1" strokeDasharray="3,2" />
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Pant leg from outside, finished hem at new length */}
+      <path d="M170 30 L310 30 L294 240 L186 240 Z" fill={C.denim} />
+
+      {/* Side seams */}
+      <line x1={186} y1={36} x2={186} y2={234} stroke={C.denimDeep} strokeWidth="1" strokeDasharray="3,2" />
+      <line x1={294} y1={36} x2={294} y2={234} stroke={C.denimDeep} strokeWidth="1" strokeDasharray="3,2" />
+
+      {/* The factory hem — now at the new length */}
+      <line x1={186} y1={228} x2={294} y2={228} stroke={C.cream} strokeWidth="2.5" strokeDasharray="8,4" />
+
+      {/* Annotations — well inside the frame */}
+      <g fontFamily={FONT} fontSize="12">
+        {/* Left annotation */}
+        <line x1={140} y1={150} x2={184} y2={170} stroke={C.brown} strokeWidth="1" />
+        <text x={20} y={140} fill={C.brown}>NEW STITCHING</text>
+        <text x={20} y={155} fill={C.brown}>TUCKED INSIDE</text>
+        <text x={20} y={170} fill={C.inkSoft}>(invisible from outside)</text>
+
+        {/* Right annotation */}
+        <line x1={340} y1={222} x2={296} y2={228} stroke={C.inkSoft} strokeWidth="1" />
+        <text x={345} y={222} fill={C.inkSoft}>ORIGINAL FACTORY HEM,</text>
+        <text x={345} y={237} fill={C.inkSoft}>NOW AT THE NEW LENGTH</text>
       </g>
-      {/* Annotations */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-        <text x={285} y={195}>original factory hem,</text>
-        <text x={285} y={208}>now at new length</text>
-      </g>
-      {/* Hidden-inside annotation */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.brown}>
-        <text x={30} y={195}>new stitching</text>
-        <text x={30} y={208}>tucked inside</text>
-      </g>
-      {/* Connector arrow */}
-      <line x1={100} y1={195} x2={135} y2={185} stroke={C.brown} strokeWidth="1" />
     </svg>
   );
 }
 
+/* ──────────────────────────────────────────────────────────────────────── */
+/* RUFFLE SKIRT                                                              */
+/* ──────────────────────────────────────────────────────────────────────── */
+
 /** Ruffle skirt: cut two rectangles to size */
 export function RuffleCutDiagram() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Two fabric rectangles */}
-      <g>
-        <rect x={30} y={40} width={155} height={150} fill={C.blush} stroke={C.ink} strokeWidth="1.5" />
-        <rect x={215} y={40} width={155} height={150} fill={C.blush} stroke={C.ink} strokeWidth="1.5" />
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Two fabric rectangles, each labeled */}
+      <rect x={50} y={70} width={170} height={160} fill={C.blush} stroke={C.ink} strokeWidth="1.5" />
+      <rect x={260} y={70} width={170} height={160} fill={C.blush} stroke={C.ink} strokeWidth="1.5" />
+
+      {/* Top edge label highlight */}
+      <rect x={50} y={70} width={170} height={14} fill={C.blushDeep} />
+      <rect x={260} y={70} width={170} height={14} fill={C.blushDeep} />
+      <text x={135} y={81} textAnchor="middle" fontFamily={FONT} fontSize="11" fill={C.cream}>TOP (waistband)</text>
+      <text x={345} y={81} textAnchor="middle" fontFamily={FONT} fontSize="11" fill={C.cream}>TOP (waistband)</text>
+
+      {/* Width labels above each rectangle */}
+      <g fontFamily={FONT} fontSize="12" fill={C.ink}>
+        <line x1={50} y1={50} x2={220} y2={50} stroke={C.ink} strokeWidth="1" />
+        <polygon points="50,47 58,50 50,53" fill={C.ink} />
+        <polygon points="220,47 212,50 220,53" fill={C.ink} />
+        <text x={135} y={42} textAnchor="middle">waist × 1</text>
+
+        <line x1={260} y1={50} x2={430} y2={50} stroke={C.ink} strokeWidth="1" />
+        <polygon points="260,47 268,50 260,53" fill={C.ink} />
+        <polygon points="430,47 422,50 430,53" fill={C.ink} />
+        <text x={345} y={42} textAnchor="middle">waist × 1</text>
       </g>
-      {/* Width labels */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.ink}>
-        <line x1={30} y1={20} x2={185} y2={20} stroke={C.ink} strokeWidth="1" />
-        <polygon points="30,17 38,20 30,23" fill={C.ink} />
-        <polygon points="185,17 177,20 185,23" fill={C.ink} />
-        <text x={75} y={15} fill={C.ink}>waist × 1</text>
+
+      {/* Total width below */}
+      <g fontFamily={FONT} fontSize="11" fill={C.brown}>
+        <text x={240} y={250} textAnchor="middle">two rectangles together = waist × 2</text>
       </g>
-      <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.ink}>
-        <line x1={215} y1={20} x2={370} y2={20} stroke={C.ink} strokeWidth="1" />
-        <polygon points="215,17 223,20 215,23" fill={C.ink} />
-        <polygon points="370,17 362,20 370,23" fill={C.ink} />
-        <text x={260} y={15} fill={C.ink}>waist × 1</text>
-      </g>
-      {/* Height label */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.ink}>
-        <line x1={10} y1={40} x2={10} y2={190} stroke={C.ink} strokeWidth="1" />
-        <polygon points="7,40 10,48 13,40" fill={C.ink} />
-        <polygon points="7,190 10,182 13,190" fill={C.ink} />
-        <text x={15} y={120} fill={C.ink}>length</text>
-        <text x={15} y={133} fill={C.ink}>+ 6 cm</text>
-      </g>
-      {/* Top edge labels */}
-      <g fontFamily="ui-monospace,monospace" fontSize="10" fill={C.blushDeep}>
-        <text x={75} y={56}>top (waistband)</text>
-        <text x={260} y={56}>top (waistband)</text>
+
+      {/* Height label on the left, inside the frame */}
+      <g fontFamily={FONT} fontSize="12" fill={C.ink}>
+        <line x1={32} y1={70} x2={32} y2={230} stroke={C.ink} strokeWidth="1" />
+        <polygon points="29,70 32,78 35,70" fill={C.ink} />
+        <polygon points="29,230 32,222 35,230" fill={C.ink} />
+        <text x={36} y={148} fill={C.ink}>length + 6 cm</text>
       </g>
     </svg>
   );
@@ -230,25 +250,25 @@ export function RuffleCutDiagram() {
 /** Ruffle skirt: side seams sewn — rectangles become a tube */
 export function RuffleTubeDiagram() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Tube viewed from above */}
-      <g>
-        <ellipse cx={200} cy={70} rx={120} ry={30} fill={C.blush} stroke={C.ink} strokeWidth="1.5" />
-        <path d="M80 70 L80 180 Q200 220 320 180 L320 70 Z" fill={C.blush} stroke="none" />
-        <line x1={80} y1={70} x2={80} y2={180} stroke={C.ink} strokeWidth="1.5" />
-        <line x1={320} y1={70} x2={320} y2={180} stroke={C.ink} strokeWidth="1.5" />
-        <path d="M80 180 Q200 220 320 180" fill="none" stroke={C.ink} strokeWidth="1.5" />
-      </g>
-      {/* Side seams highlighted on the cylinder edges */}
-      <g stroke={C.blushDeep} strokeWidth="2.5" strokeDasharray="6,3">
-        <line x1={80} y1={70} x2={80} y2={180} />
-        <line x1={320} y1={70} x2={320} y2={180} />
-      </g>
-      {/* Labels */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11">
-        <text x={30} y={130} fill={C.blushDeep}>side seam</text>
-        <text x={330} y={130} fill={C.blushDeep}>side seam</text>
-        <text x={155} y={60} fill={C.brown}>top of skirt (open)</text>
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Tube viewed slightly from above */}
+      <ellipse cx={240} cy={70} rx={140} ry={32} fill={C.blush} stroke={C.ink} strokeWidth="1.5" />
+      <path d="M100 70 L100 200 Q240 240 380 200 L380 70 Z" fill={C.blush} stroke="none" />
+      <line x1={100} y1={70} x2={100} y2={200} stroke={C.ink} strokeWidth="1.5" />
+      <line x1={380} y1={70} x2={380} y2={200} stroke={C.ink} strokeWidth="1.5" />
+      <path d="M100 200 Q240 240 380 200" fill="none" stroke={C.ink} strokeWidth="1.5" />
+
+      {/* Side seams highlighted */}
+      <line x1={100} y1={70} x2={100} y2={200} stroke={C.blushDeep} strokeWidth="3" strokeDasharray="6,3" />
+      <line x1={380} y1={70} x2={380} y2={200} stroke={C.blushDeep} strokeWidth="3" strokeDasharray="6,3" />
+
+      {/* Labels — placed clear of the cylinder */}
+      <g fontFamily={FONT} fontSize="12">
+        <text x={50} y={140} textAnchor="middle" fill={C.blushDeep} fontWeight="bold">SIDE</text>
+        <text x={50} y={155} textAnchor="middle" fill={C.blushDeep} fontWeight="bold">SEAM</text>
+        <text x={430} y={140} textAnchor="middle" fill={C.blushDeep} fontWeight="bold">SIDE</text>
+        <text x={430} y={155} textAnchor="middle" fill={C.blushDeep} fontWeight="bold">SEAM</text>
+        <text x={240} y={250} textAnchor="middle" fill={C.brown}>top of skirt — still open</text>
       </g>
     </svg>
   );
@@ -257,31 +277,40 @@ export function RuffleTubeDiagram() {
 /** Ruffle skirt: cross-section of folded waistband casing */
 export function RuffleCasingCrossSection() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
+    <svg viewBox="0 0 480 270" {...svgProps}>
       {/* Side view of the folded top edge */}
-      <g>
-        {/* Outer skirt fabric coming up from below */}
-        <rect x={60} y={150} width={280} height={50} fill={C.blush} />
-        {/* The first fold (1 cm under) */}
-        <rect x={60} y={130} width={280} height={20} fill={C.blush} stroke={C.ink} strokeWidth="0.5" />
-        {/* Second fold (3 cm forming the casing) */}
-        <rect x={60} y={90} width={280} height={40} fill={C.blush} stroke={C.ink} strokeWidth="0.5" />
-      </g>
+
+      {/* Skirt body (lowest section, below the casing) */}
+      <rect x={60} y={170} width={360} height={70} fill={C.blush} />
+      <text x={240} y={210} textAnchor="middle" fontFamily={FONT} fontSize="12" fill={C.cream} fontWeight="bold">
+        SKIRT BODY
+      </text>
+
+      {/* First fold (1 cm) */}
+      <rect x={60} y={150} width={360} height={20} fill={C.blush} stroke={C.ink} strokeWidth="0.5" opacity="0.95" />
+
+      {/* Second fold (3 cm tunnel) */}
+      <rect x={60} y={100} width={360} height={50} fill={C.blush} stroke={C.ink} strokeWidth="0.5" opacity="0.85" />
+
+      {/* Tunnel interior — elastic visible */}
+      <line x1={80} y1={125} x2={400} y2={125} stroke={C.ink} strokeWidth="8" strokeLinecap="round" opacity="0.5" />
+      <text x={240} y={129} textAnchor="middle" fontFamily={FONT} fontSize="11" fill={C.cream} fontWeight="bold">
+        ELASTIC THREADS THROUGH HERE
+      </text>
+
       {/* Stitch line near the bottom of the casing */}
-      <g stroke={C.blushDeep} strokeWidth="2.5" strokeDasharray="6,3">
-        <line x1={70} y1={130} x2={330} y2={130} />
-      </g>
-      {/* Elastic visualized as a circle inside the tunnel */}
-      <g>
-        <ellipse cx={200} cy={110} rx={120} ry={8} fill={C.inkSoft} opacity="0.35" />
-        <line x1={80} y1={110} x2={320} y2={110} stroke={C.inkSoft} strokeWidth="6" strokeLinecap="round" opacity="0.4" />
-      </g>
-      {/* Labels */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-        <text x={70} y={108}>elastic threads through here</text>
-        <text x={70} y={148} fill={C.blushDeep}>stitch line (leave 4 cm gap)</text>
-        <text x={70} y={180}>skirt body</text>
-      </g>
+      <line x1={80} y1={150} x2={400} y2={150} stroke={C.blushDeep} strokeWidth="3" strokeDasharray="6,3" />
+      <text x={240} y={167} textAnchor="middle" fontFamily={FONT} fontSize="11" fill={C.blushDeep} fontWeight="bold">
+        STITCH LINE (LEAVE A 4 CM GAP)
+      </text>
+
+      {/* Header */}
+      <text x={240} y={50} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.ink} fontWeight="bold">
+        SIDE VIEW: THE FOLDED CASING
+      </text>
+      <text x={240} y={68} textAnchor="middle" fontFamily={FONT} fontSize="11" fill={C.inkSoft}>
+        fold the top edge down 1 cm, then down another 3 cm
+      </text>
     </svg>
   );
 }
@@ -289,34 +318,35 @@ export function RuffleCasingCrossSection() {
 /** Ruffle skirt: threading elastic with a safety pin */
 export function RuffleElasticDiagram() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Casing tunnel (rectangle) */}
-      <g>
-        <rect x={40} y={80} width={320} height={64} fill={C.cream} stroke={C.ink} strokeWidth="1.5" />
-        <line x1={40} y1={80} x2={360} y2={80} stroke={C.blushDeep} strokeWidth="2" strokeDasharray="6,3" />
-        <line x1={40} y1={144} x2={360} y2={144} stroke={C.blushDeep} strokeWidth="2" strokeDasharray="6,3" />
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Casing tunnel (a tall flat rectangle) */}
+      <rect x={50} y={100} width={380} height={70} fill={C.cream} stroke={C.ink} strokeWidth="1.5" />
+      <line x1={50} y1={100} x2={430} y2={100} stroke={C.blushDeep} strokeWidth="2.5" strokeDasharray="6,3" />
+      <line x1={50} y1={170} x2={430} y2={170} stroke={C.blushDeep} strokeWidth="2.5" strokeDasharray="6,3" />
+
+      {/* Gap on the left (showing where the elastic enters) */}
+      <rect x={50} y={100} width={60} height={70} fill={C.creamDeep} />
+      <line x1={110} y1={100} x2={110} y2={170} stroke={C.ink} strokeWidth="1" strokeDasharray="2,2" />
+      <text x={80} y={92} textAnchor="middle" fontFamily={FONT} fontSize="11" fill={C.brown} fontWeight="bold">
+        4 CM GAP
+      </text>
+
+      {/* Elastic — already partly threaded */}
+      <rect x={30} y={128} width={250} height={16} fill={C.inkSoft} rx={3} />
+
+      {/* Safety pin at the leading edge */}
+      <g transform="translate(285, 136)">
+        <circle cx={0} cy={0} r={8} fill={C.brown} />
+        <circle cx={0} cy={0} r={3} fill={C.cream} />
+        <line x1={-7} y1={0} x2={-22} y2={-3} stroke={C.brown} strokeWidth="3" />
       </g>
-      {/* Gap on the left */}
-      <rect x={40} y={80} width={50} height={64} fill={C.creamDeep} stroke="none" />
-      <text x={48} y={75} fontFamily="ui-monospace,monospace" fontSize="10" fill={C.brown}>4 cm gap</text>
-      {/* Elastic with safety pin */}
-      <g>
-        {/* Elastic strip — partially threaded */}
-        <rect x={20} y={104} width={220} height={16} fill={C.inkSoft} rx={2} />
-        {/* Safety pin at the leading edge */}
-        <g transform="translate(240, 112)">
-          <circle cx={0} cy={0} r={6} fill={C.brown} />
-          <line x1={-6} y1={0} x2={-18} y2={-2} stroke={C.brown} strokeWidth="2.5" />
-        </g>
-      </g>
-      {/* Direction arrow */}
-      <g stroke={C.blushDeep} strokeWidth="1.5" fill="none">
-        <line x1={140} y1={170} x2={280} y2={170} />
-        <polygon points="275,166 285,170 275,174" fill={C.blushDeep} />
-        <text x={180} y={190} fontFamily="ui-monospace,monospace" fontSize="11" fill={C.blushDeep}>
-          push through the casing
-        </text>
-      </g>
+
+      {/* Direction arrow below the casing */}
+      <line x1={170} y1={210} x2={350} y2={210} stroke={C.blushDeep} strokeWidth="2" />
+      <polygon points="345,205 358,210 345,215" fill={C.blushDeep} />
+      <text x={260} y={235} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.blushDeep} fontWeight="bold">
+        PUSH THE PIN ALL THE WAY THROUGH
+      </text>
     </svg>
   );
 }
@@ -324,26 +354,36 @@ export function RuffleElasticDiagram() {
 /** Ruffle skirt: double-fold hem cross-section */
 export function RuffleHemCrossSection() {
   return (
-    <svg viewBox="0 0 400 225" {...svgProps}>
-      {/* Side view of the bottom edge */}
-      <g>
-        {/* Fabric body coming down */}
-        <rect x={60} y={40} width={280} height={70} fill={C.blush} stroke={C.ink} strokeWidth="0.5" />
-        {/* First fold under (1cm) */}
-        <rect x={60} y={110} width={280} height={20} fill={C.blush} stroke={C.ink} strokeWidth="0.5" />
-        {/* Second fold (1 cm — the visible hem) */}
-        <rect x={60} y={130} width={280} height={20} fill={C.blush} stroke={C.ink} strokeWidth="0.5" />
-      </g>
+    <svg viewBox="0 0 480 270" {...svgProps}>
+      {/* Skirt body coming down */}
+      <rect x={60} y={40} width={360} height={100} fill={C.blush} />
+      <text x={240} y={95} textAnchor="middle" fontFamily={FONT} fontSize="12" fill={C.cream} fontWeight="bold">
+        SKIRT BODY
+      </text>
+
+      {/* First fold (1 cm) */}
+      <rect x={60} y={140} width={360} height={20} fill={C.blush} stroke={C.ink} strokeWidth="0.5" opacity="0.92" />
+
+      {/* Second fold (1 cm — visible hem) */}
+      <rect x={60} y={160} width={360} height={20} fill={C.blush} stroke={C.ink} strokeWidth="0.5" opacity="0.85" />
+
       {/* Stitch line near the top of the hem fold */}
-      <g stroke={C.blushDeep} strokeWidth="2.5" strokeDasharray="6,3">
-        <line x1={70} y1={132} x2={330} y2={132} />
+      <line x1={80} y1={163} x2={400} y2={163} stroke={C.blushDeep} strokeWidth="3" strokeDasharray="6,3" />
+
+      {/* Labels below */}
+      <g fontFamily={FONT} fontSize="11">
+        <text x={240} y={205} textAnchor="middle" fill={C.blushDeep} fontWeight="bold">
+          STITCH 2 MM FROM THE UPPER FOLDED EDGE
+        </text>
+        <text x={240} y={224} textAnchor="middle" fill={C.inkSoft}>
+          the raw edge is hidden inside the double fold
+        </text>
       </g>
-      {/* Labels */}
-      <g fontFamily="ui-monospace,monospace" fontSize="11" fill={C.inkSoft}>
-        <text x={70} y={75}>skirt body</text>
-        <text x={70} y={170} fill={C.blushDeep}>stitch around 2 mm from upper fold</text>
-        <text x={70} y={185}>raw edge hidden inside the double fold</text>
-      </g>
+
+      {/* Header */}
+      <text x={240} y={28} textAnchor="middle" fontFamily={FONT} fontSize="13" fill={C.ink} fontWeight="bold">
+        DOUBLE-FOLD HEM — SIDE VIEW
+      </text>
     </svg>
   );
 }
