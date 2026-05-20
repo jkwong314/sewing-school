@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { ProjectCard, ComingSoonCard } from "@/components/ProjectCard";
+import {
+  StitchPreview,
+  JeansHeroIllustration,
+  RuffleSkirtIllustration,
+} from "@/components/Illustrations";
 
 export default function Home() {
   return (
@@ -35,14 +40,14 @@ export default function Home() {
             title="Hem jeans (keep original hem)"
             difficulty="Beginner"
             time="30 min"
-            swatch="linear-gradient(135deg,#3b5d8a,#6789b3)"
+            art={<JeansHeroIllustration />}
           />
           <ProjectCard
             href="/projects/ruffle-skirt"
             title="Ruffle skirt"
             difficulty="Beginner"
             time="2 hours"
-            swatch="linear-gradient(135deg,#e8a5a0,#f0b8b3)"
+            art={<RuffleSkirtIllustration />}
           />
           <ComingSoonCard title="Basic hem" />
           <ComingSoonCard title="Pillow cover" />
@@ -64,21 +69,21 @@ export default function Home() {
             title="Straight stitch"
             difficulty="Foundational"
             time="2 min read"
-            swatch="#faf6ee"
+            art={<StitchPreview kind="straight" />}
           />
           <ProjectCard
             href="/stitches/zigzag"
             title="Zigzag"
             difficulty="Beginner"
             time="3 min read"
-            swatch="#faf6ee"
+            art={<StitchPreview kind="zigzag" />}
           />
           <ProjectCard
             href="/stitches/buttonhole"
             title="Buttonhole"
             difficulty="Intermediate"
             time="4 min read"
-            swatch="#faf6ee"
+            art={<StitchPreview kind="buttonhole" />}
           />
         </div>
       </section>

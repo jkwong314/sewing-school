@@ -1,24 +1,28 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 type Props = {
   href: string;
   title: string;
   difficulty: string;
   time: string;
-  swatch: string; // CSS background value
+  art?: ReactNode;
+  swatch?: string; // legacy CSS-only fallback
 };
 
-export function ProjectCard({ href, title, difficulty, time, swatch }: Props) {
+export function ProjectCard({ href, title, difficulty, time, art, swatch }: Props) {
   return (
     <Link
       href={href}
       className="group dashed-border bg-white p-4 flex flex-col gap-3 hover:shadow-md transition-shadow min-h-[180px]"
     >
       <div
-        className="rounded h-32"
-        style={{ background: swatch }}
+        className="rounded h-32 overflow-hidden flex"
+        style={swatch && !art ? { background: swatch } : undefined}
         aria-hidden="true"
-      />
+      >
+        {art}
+      </div>
       <div>
         <h3 className="font-display text-xl text-ink leading-tight group-hover:text-brown-deep">{title}</h3>
         <div className="font-mono text-xs text-ink-soft mt-1 uppercase tracking-wider">

@@ -1,6 +1,7 @@
 import { ProjectCard } from "@/components/ProjectCard";
+import { NeedleIcon, ThreadSpoolIcon, FabricIcon, ToolboxIcon } from "@/components/Illustrations";
 
-export const metadata = { title: "Reference · Sewing School" };
+export const metadata = { title: "Reference" };
 
 export default function ReferenceIndex() {
   return (
@@ -11,10 +12,10 @@ export default function ReferenceIndex() {
         Needle sizes, thread types, fabric pairings, and troubleshooting — the parts of the manual you actually want.
       </p>
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <ProjectCard href="/reference/needles" title="Needles" difficulty="Reference" time="Lookup" swatch="#faf6ee" />
-        <ProjectCard href="/reference/threads" title="Threads" difficulty="Reference" time="Lookup" swatch="#faf6ee" />
-        <ProjectCard href="/reference/fabrics" title="Fabrics" difficulty="Reference" time="Lookup" swatch="#faf6ee" />
-        <ProjectCard href="/reference/troubleshooting" title="Troubleshooting" difficulty="Reference" time="Lookup" swatch="#faf6ee" />
+        <ProjectCard href="/reference/needles" title="Needles" difficulty="Reference" time="Lookup" art={<NeedleIcon />} />
+        <ProjectCard href="/reference/threads" title="Threads" difficulty="Reference" time="Lookup" art={<ThreadSpoolIcon />} />
+        <ProjectCard href="/reference/fabrics" title="Fabrics" difficulty="Reference" time="Lookup" art={<FabricIcon />} />
+        <ProjectCard href="/reference/troubleshooting" title="Troubleshooting" difficulty="Reference" time="Lookup" art={<ToolboxIcon />} />
       </div>
     </div>
   );

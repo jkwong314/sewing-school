@@ -1,6 +1,7 @@
 import { ProjectCard, ComingSoonCard } from "@/components/ProjectCard";
+import { JeansHeroIllustration, RuffleSkirtIllustration } from "@/components/Illustrations";
 
-export const metadata = { title: "Projects · Sewing School" };
+export const metadata = { title: "Projects" };
 
 export default function ProjectsIndex() {
   return (
@@ -11,8 +12,8 @@ export default function ProjectsIndex() {
         Each project is a beginner-friendly walkthrough. You&rsquo;ll learn the stitches and materials as you go.
       </p>
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <ProjectCard href="/projects/hem-jeans" title="Hem jeans (keep original hem)" difficulty="Beginner" time="30 min" swatch="linear-gradient(135deg,#3b5d8a,#6789b3)" />
-        <ProjectCard href="/projects/ruffle-skirt" title="Ruffle skirt" difficulty="Beginner" time="2 hours" swatch="linear-gradient(135deg,#e8a5a0,#f0b8b3)" />
+        <ProjectCard href="/projects/hem-jeans" title="Hem jeans (keep original hem)" difficulty="Beginner" time="30 min" art={<JeansHeroIllustration />} />
+        <ProjectCard href="/projects/ruffle-skirt" title="Ruffle skirt" difficulty="Beginner" time="2 hours" art={<RuffleSkirtIllustration />} />
         <ComingSoonCard title="Basic hem" />
         <ComingSoonCard title="Pillow cover" />
         <ComingSoonCard title="Tote bag" />
